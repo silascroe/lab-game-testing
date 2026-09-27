@@ -939,7 +939,13 @@ export class TextureLibrary {
   sign(spec: SignSpec) {
     const t = toTexture(signTexture(spec));
     t.repeat.set(1, 1);
-    return new THREE.MeshStandardMaterial({ map: t, roughness: 0.85, metalness: 0.0 });
+    return new THREE.MeshStandardMaterial({
+      map: t,
+      roughness: 0.78,
+      metalness: 0.0,
+      emissive: 0x101214,
+      emissiveIntensity: 0.12,
+    });
   }
 
   crt(kind: "waveform" | "specimen" | "status" | "map" | "static" | "boot") {
