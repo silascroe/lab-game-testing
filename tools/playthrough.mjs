@@ -303,7 +303,7 @@ for (let run = 1; run <= RUNS; run++) {
 
   // The last beat is spatial: physically leave containment and let the bulkhead
   // close behind the player.
-  check(await walkTo(0, -2.2, "clear of containment"), "cleared the containment bulkhead");
+  check(await walkTo(0, -1.3, "clear of containment"), "cleared the containment bulkhead");
   await sleep(1900);
   s = await state();
   check(s.finished, "facility completion state reached after clearing the chamber", `finished=${s.finished} stage=${s.stage}`);
