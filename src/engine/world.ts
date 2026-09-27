@@ -914,7 +914,7 @@ export function buildWorld(scene: THREE.Scene, tex: TextureLibrary): WorldHandle
       { id: "chiller", label: "CHILLER LOOP", state: false },
     ]);
 
-    P.transformer(ctx, 18.5, 15.0, -Math.PI / 4);
+    const tr = P.transformer(ctx, 18.5, 15.0, -Math.PI / 4);
     P.pumpUnit(ctx, 18.0, 11.5, 0.2);
     P.pumpUnit(ctx, 18.0, 13.0, -0.1);
     P.workbench(ctx, 13.0, 15.6, 2.4, 0);
@@ -946,7 +946,6 @@ export function buildWorld(scene: THREE.Scene, tex: TextureLibrary): WorldHandle
     work.shadow.mapSize.set(1024, 1024);
     work.shadow.bias = -0.0015;
 
-    const tr = P.transformer(ctx, 18.5, 15.0, -Math.PI / 4);
     bootLights.push({ light: tr.hum, target: 15, delay: 2.0, kind: "on", base: 4 });
 
     const breakerIds: [string, string, THREE.Mesh[], number][] = [
