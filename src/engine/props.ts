@@ -91,9 +91,9 @@ export function fluorescentFixture(
   // end caps + suspension stubs
   addBox(ctx, darkSteel(ctx), 0.1, 0.1, 0.36, { x: -len / 2, y: 0.06, parent: g });
   addBox(ctx, darkSteel(ctx), 0.1, 0.1, 0.36, { x: len / 2, y: 0.06, parent: g });
-  const tubeMat = dead ? plastic(0x2a2d2a) : emissive(0xdfe8ff, 4.4);
+  const tubeMat = dead ? plastic(0x2a2d2a) : emissive(0xdfe8ff, 2.8);
   const tube = addBox(ctx, tubeMat, len * 0.92, 0.07, 0.1, { y: -0.09, parent: g });
-  const light = new THREE.PointLight(dead ? 0x223044 : 0xcfe0ff, dead ? 0.0 : 52, 15, 2);
+  const light = new THREE.PointLight(dead ? 0x223044 : 0xcfe0ff, dead ? 0.0 : 30, 15, 2);
   light.position.set(0, -0.15, 0);
   g.add(light);
   return { tube, light };
