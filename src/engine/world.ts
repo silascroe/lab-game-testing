@@ -627,29 +627,40 @@ export function buildWorld(scene: THREE.Scene, tex: TextureLibrary): WorldHandle
       const leg = addBox(ctx, tex.paintedMetal(0x3f423c), 0.16, 0.5, 0.16, { x: Math.cos(a) * 1.25, z: Math.sin(a) * 1.25, y: 0.25, parent: tank, castShadow: true });
       leg.castShadow = true;
     }
-    const shell = addMesh(ctx, cylinderGeo(1.55, 1.6, 3.5, 28, 0.5), tex.glass(0xa8ccd8, 0.17), { y: 1.9, parent: tank });
-    shell.castShadow = false;
-    // the tank itself is solid - approximated with a box so the player cannot walk into it
-    addBox(ctx, concreteFloor, 3.1, 3.6, 3.1, {
-      x: 0,
-      y: 0.22 + 1.85,
-      z: -11.5,
-      collider: true,
-      castShadow: false,
-      receiveShadow: false,
-      uvScale: 0.2,
-    });
-    const liquid = addMesh(ctx, cylinderGeo(1.5, 1.5, 2.9, 28, 0.5), new THREE.MeshPhysicalMaterial({
-      color: 0x2f6668,
-      roughness: 0.2,
+    const shell = addMesh(ctx, cylinderGeo(1.55, 1.6, 3.5, 28, 0.5), new THREE.MeshPhysicalMaterial({
+      color: 0xa8ccd8,
+      roughness: 0.08,
       metalness: 0.0,
       transparent: true,
-      opacity: 0.42,
-      transmission: 0.18,
-      thickness: 0.45,
+      opacity: 0.13,
+      transmission: 0.28,
+      thickness: 0.12,
+      ior: 1.46,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+    }), { y: 1.9, parent: tank });
+    shell.castShadow = false;
+
+    // Collision must be invisible. The prototype accidentally used addBox here,
+    // which rendered a 3.1m concrete cube inside the transparent tank and made the
+    // hero prop read like a black refrigerator. Keep the same collision volume
+    // without adding any geometry to the scene.
+    ctx.colliders.push(new THREE.Box3(
+      new THREE.Vector3(-1.55, 0.22, -13.05),
+      new THREE.Vector3(1.55, 3.82, -9.95),
+    ));
+
+    const liquid = addMesh(ctx, cylinderGeo(1.5, 1.5, 2.9, 28, 0.5), new THREE.MeshPhysicalMaterial({
+      color: 0x3f7778,
+      roughness: 0.18,
+      metalness: 0.0,
+      transparent: true,
+      opacity: 0.30,
+      transmission: 0.26,
+      thickness: 0.42,
       ior: 1.31,
-      emissive: 0x0b3032,
-      emissiveIntensity: 0.38,
+      emissive: 0x103e40,
+      emissiveIntensity: 0.46,
       side: THREE.DoubleSide,
       depthWrite: false,
     }), { y: 1.6, parent: tank });
@@ -680,6 +691,12 @@ export function buildWorld(scene: THREE.Scene, tex: TextureLibrary): WorldHandle
     core.scale.set(1.3, 0.85, 1.1);
     const tendrils = P.organismTendrils(ctx, 0, -11.5, 1.1, 9, 91);
     tendrils.position.y = 0.22;
+
+    // A dim cyan service glow keeps the cylinder and fluid legible even before
+    // auxiliary power. The red specimen pulse then becomes the visual event.
+    const tankService = new THREE.PointLight(0x5bb7b9, 5.5, 5.8, 2);
+    tankService.position.set(0, 2.15, -11.35);
+    scene.add(tankService);
 
     const tankLight = new THREE.PointLight(0xff6a3c, 0.0, 9, 2);
     tankLight.position.set(0, 1.8, -11.5);
