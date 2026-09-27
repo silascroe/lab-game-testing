@@ -639,20 +639,42 @@ export function buildWorld(scene: THREE.Scene, tex: TextureLibrary): WorldHandle
       receiveShadow: false,
       uvScale: 0.2,
     });
-    const liquid = addMesh(ctx, cylinderGeo(1.5, 1.5, 2.9, 28, 0.5), new THREE.MeshStandardMaterial({
-      color: 0x1c4a4e, roughness: 0.12, metalness: 0.35, transparent: true, opacity: 0.88,
-      emissive: 0x0a2a2c, emissiveIntensity: 0.5,
+    const liquid = addMesh(ctx, cylinderGeo(1.5, 1.5, 2.9, 28, 0.5), new THREE.MeshPhysicalMaterial({
+      color: 0x2f6668,
+      roughness: 0.2,
+      metalness: 0.0,
+      transparent: true,
+      opacity: 0.42,
+      transmission: 0.18,
+      thickness: 0.45,
+      ior: 1.31,
+      emissive: 0x0b3032,
+      emissiveIntensity: 0.38,
+      side: THREE.DoubleSide,
+      depthWrite: false,
     }), { y: 1.6, parent: tank });
     liquid.receiveShadow = true;
     for (const y of [0.35, 1.9, 3.45]) {
       addMesh(ctx, new THREE.TorusGeometry(1.62, 0.05, 8, 28), tex.paintedMetal(0x55584f), { y, rx: Math.PI / 2, parent: tank, castShadow: true });
+    }
+    // Four vertical cage rails make the cylindrical silhouette read even in low light.
+    // The original glass/liquid-only profile collapsed into a flat dark shape head-on.
+    for (let i = 0; i < 4; i++) {
+      const a = Math.PI / 4 + (i * Math.PI) / 2;
+      addMesh(ctx, cylinderGeo(0.035, 0.035, 3.18, 8), tex.paintedMetal(0x66685f), {
+        x: Math.cos(a) * 1.62,
+        y: 1.9,
+        z: Math.sin(a) * 1.62,
+        parent: tank,
+        castShadow: true,
+      });
     }
     addMesh(ctx, cylinderGeo(1.62, 1.62, 0.14, 28, 0.5), tex.paintedMetal(0x55584f), { y: 3.68, parent: tank, castShadow: true });
     addMesh(ctx, cylinderGeo(1.58, 1.58, 0.12, 28, 0.5), tex.paintedMetal(0x3f423c), { y: 0.32, parent: tank });
 
     // the specimen inside
     const coreMat = new THREE.MeshStandardMaterial({
-      color: 0x8a4a3e, emissive: 0x6a2010, emissiveIntensity: 1.3, roughness: 0.4, metalness: 0.0,
+      color: 0xb15d4b, emissive: 0x7a2116, emissiveIntensity: 1.65, roughness: 0.38, metalness: 0.0,
     });
     const core = addMesh(ctx, new THREE.IcosahedronGeometry(0.62, 2), coreMat, { y: 1.55, parent: tank, castShadow: true });
     core.scale.set(1.3, 0.85, 1.1);
@@ -770,7 +792,6 @@ export function buildWorld(scene: THREE.Scene, tex: TextureLibrary): WorldHandle
     scene.add(tankKey.target);
 
     P.dustMotes(ctx, 0, 2.0, -11.5, 12, 3.2, 10, 320);
-    P.lightShaft(ctx, 0, -11.5, 3.9, 0.22, 1.8, 0xffb0a0, 0.35);
   }
 
   /* ================= CONTROL ROOM ================= */
@@ -1230,8 +1251,8 @@ export function buildWorld(scene: THREE.Scene, tex: TextureLibrary): WorldHandle
     // specimen pulse
     for (const p of tankPulse) {
       const s = 0.55 + 0.45 * Math.sin(t * 0.9);
-      p.light.intensity = power ? 20 * s : 4.5 * s;
-      p.mat.emissiveIntensity = power ? 1.0 + 0.45 * s : 0.4;
+      p.light.intensity = power ? 30 * s : 5.5 * s;
+      p.mat.emissiveIntensity = power ? 1.25 + 0.65 * s : 0.5;
     }
   }
 
