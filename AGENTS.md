@@ -1,110 +1,68 @@
 # AGENTS.md — Site Orpheus continuation notes
 
-This repository is the working refinement build of **Site Orpheus**, a first-person Three.js abandoned biotech-lab experience.
-
-Treat the repository itself as the source of truth. Do not depend on chat history to understand the project.
+This repository is the working refinement build of **Site Orpheus**, a first-person Three.js abandoned biotech-lab experience. Treat the repository as the source of truth; do not rely on chat history.
 
 ## Product goal
 
-Deliver a compact, polished, explorable first-person environment where the environment is the product. Priorities, in order:
+Deliver a compact, polished, explorable facility where the environment is the product. Priorities:
 
-1. environment quality and spatial coherence
-2. atmosphere and lighting
-3. first-person movement and collision
-4. interaction polish
-5. coherent environmental storytelling
+1. Environment quality and spatial coherence
+2. Atmosphere and lighting
+3. First-person movement and collision
+4. Interaction polish
+5. Coherent environmental storytelling
 
-Avoid feature creep into combat, inventory systems, enemies, or large puzzle trees.
+Avoid combat, enemies, inventory systems, and large puzzle trees.
 
 ## Current state
 
-Current working branch: `main`.
+- Branch: `main`
+- Latest application-code commit: `f72b914` — “Make hub hint verification robust to slow renderers”
+- GitHub Actions CI run **#35** for that commit completed successfully.
+- There are no known failing CI checks at this head.
+- The handoff notes and audit summary were refreshed after CI; documentation-only changes are excluded from the workflow triggers.
 
-As of the current head:
+The experience has an airlock, central hub, main corridor, wet lab, control room, Records/server room, utility room, and containment chamber. The main objective restores AUX BUS A and B, releases containment, lets the player inspect specimen 44-B and explicitly log its seal, then requires them to leave the chamber before the bulkhead closes. Records is an optional route with a physical keypad.
 
-- TypeScript check passes.
-- Production Vite build passes.
-- Doorway geometry audit passes.
-- The main objective route passes end-to-end:
-  - spawn in airlock
-  - enter central hub
-  - reach utility room
-  - restore AUX BUS A and AUX BUS B
-  - return to containment
-  - inspect specimen 44-B
-  - explicitly log the chamber seal
-  - ending state appears
-- The rendered sign visibility audit passes the expected approach views.
-- No browser console errors were reported in the latest full CI run before the remaining test failures.
+## Latest verification
 
-The current CI is **not fully green**. The failures are concentrated in the secondary automated checks, not the main objective path.
+CI run #35 passed all workflow steps:
 
-## Known issues to fix next
+- TypeScript check and production Vite build
+- Geometry audit for the spawn point and door openings
+- Rendered sign-visibility audit from expected approach views
+- One real-input first-person objective playthrough
+- Separate real-input Records keypad route: rejects `1111`, accepts `7419`, enters Records, and opens a terminal log
+- Screenshot capture and upload as the `site-orpheus-screenshots` Actions artifact
 
-### 1. Records/keypad route automation
+The browser checks use Chromium with SwiftShader. The screenshot harness can request a hardware GPU with `ORPHEUS_GPU=1`, but the CI workflow does not set it. The current CI result verifies functionality and captures the scene; it does not establish how the latest build looks on the user's GPU. Human visual acceptance is still useful.
 
-The optional records-room test currently gets stuck near the keypad/door approach. It times out close to the records doorway and then cascades into failures for:
+## Recent refinement work
 
-- opening the keypad overlay
-- wrong-code rejection verification
-- walking through the unlocked records door
-- reaching a records terminal
-- opening the records log
-
-Do not assume this is purely a test-harness bug. Inspect the actual geometry, interactable anchor, collision, and prompt acquisition around the records door/keypad.
-
-The last logged timeout was roughly around `(-0.94, 5.52)`, about 1 meter from the keypad approach target.
-
-### 2. Sprint/crouch assertions happen after completion
-
-The automated playthrough currently tests sprint and crouch after the ending has already fired and the gameplay HUD/input is blocked. Those checks report false even though the movement system itself is functional.
-
-Move those control checks earlier in the playthrough, before the final seal/ending interaction.
-
-### 3. Continue visual inspection, not only structural testing
-
-A previous real-player failure showed signage textures existed but were visually buried behind wall/door/pipe geometry. That is why the project now includes rendered sign visibility checks.
-
-When changing signage, lighting, props, or architecture:
-
-- inspect actual rendered views
-- prefer physical/credible placement fixes over depth-test hacks
-- do not make signs render through walls
-- keep text readable without making the environment look like a UI demo
-
-## Visual changes already made
-
-Recent refinement work includes:
-
-- physical backplates for wall signs
-- containment and lift signage moved onto clear wall areas
-- duplicate wayfinding plaques removed
-- sign text constrained to the sign face
-- fluorescent practicals and several hot lights reduced
-- global exposure and ambient fill reduced
-- bloom, grain, chromatic aberration, and fog made more restrained
-- soft-shadow mapping enabled
-- duplicate utility transformer geometry removed
-- observation/power-up staging strengthened
-
-Do not blindly undo these changes without checking the rendered result.
+- Repositioned signage and added physical backplates after signs were obscured by architecture.
+- Reduced over-bright practical lighting and restrained exposure, fog, bloom, grain, and chromatic aberration.
+- Removed duplicate utility transformer geometry and strengthened containment staging.
+- Added explicit seal acknowledgement and a physical containment exit beat.
+- Made the Records keypad a distinct interaction and fixed the end-to-end route.
+- Added geometry, sign visibility, first-person playthrough, and screenshot tooling.
 
 ## Important files
 
-- `src/engine/world.ts` — facility layout, props, rooms, doors, lights, interactables, progression wiring
-- `src/engine/Lab.ts` — renderer, player integration, input, interaction targeting, progression state, diagnostics
+- `src/engine/world.ts` — facility layout, props, rooms, doors, lights, and interactions
+- `src/engine/Lab.ts` — renderer, input, targeting, progression, and diagnostics
 - `src/engine/player.ts` — first-person movement and collision
-- `src/engine/props.ts` — reusable procedural props, signage, practical lights, atmosphere helpers
-- `src/engine/textures.ts` — procedural/canvas textures and sign rendering
-- `src/engine/postfx.ts` — post-processing and grade
+- `src/engine/props.ts` — procedural props, signs, practical lights, atmosphere
+- `src/engine/textures.ts` — canvas-generated material and sign textures
 - `src/engine/audio.ts` — synthesized ambience and effects
-- `src/App.tsx` — React UI state and overlays
-- `tools/audit.mjs` — geometry/doorway audit
-- `tools/sign-audit.mjs` — rendered sign visibility audit
-- `tools/playthrough.mjs` — automated first-person gameplay route
-- `tools/screenshot.mjs` — deterministic screenshot capture
-- `tools/views-delivery.json` — delivery/review viewpoints
-- `.github/workflows/ci.yml` — CI verification sequence
+- `src/engine/postfx.ts` — post-processing
+- `src/App.tsx`, `src/ui/Overlays.tsx` — loading, start, HUD, keypad, logs, ending, error state
+- `tools/audit.mjs` — doorway and spawn geometry checks
+- `tools/sign-audit.mjs` — rendered sign visibility checks
+- `tools/playthrough.mjs` — real-input objective and keypad runs
+- `tools/screenshot.mjs`, `tools/views-delivery.json` — deterministic review captures
+- `.github/workflows/ci.yml` — CI sequence
+
+The world is made from original procedural geometry and canvas textures. No external model or texture pack is required.
 
 ## Local workflow
 
@@ -116,46 +74,10 @@ npm run check
 npm run dev
 ```
 
-For a production-like local run:
+The browser harness dependencies live under `.testkit`. To run the browser checks locally, install them with `npm ci --prefix .testkit` and install Playwright Chromium.
 
-```bash
-npm run build
-npm run preview -- --host 127.0.0.1
-```
+Diagnostic helpers are exposed only when the app is opened with `?test=1`; ordinary visits do not publish the debug API on `window`.
 
-The test harness uses Playwright dependencies under `.testkit`.
+## Next review
 
-If running the full browser checks locally, install them first:
-
-```bash
-npm ci --prefix .testkit
-npx --prefix .testkit playwright install chromium
-```
-
-Then run the preview server and execute the audit tools against the printed URL.
-
-## Working style
-
-Make small, inspectable commits. After meaningful changes:
-
-1. type-check/build
-2. run the geometry audit
-3. run the sign audit if layout/signage changed
-4. run the first-person playthrough
-5. inspect screenshots or the live browser for visual changes
-
-Do not declare success because the build is green. This is a visual interactive project; rendered inspection matters.
-
-If a future agent has access only to GitHub, GitHub plus Actions is sufficient to continue. A local/remote machine is useful for direct browser play and faster iteration, but it is not required to understand or edit the project.
-
-## Handoff rule
-
-Before leaving the project in a partially finished state, update this file with:
-
-- latest known-good commit
-- what was changed
-- what still fails
-- exact test/log evidence
-- the next recommended action
-
-That keeps continuation independent of any particular ChatGPT conversation, branch, or tool session.
+Open the deployed build in a normal browser and judge the world visually and by walking it. If the visual result needs work, capture the affected view and fix the scene itself. Do not declare visual success from a green build or structural audit alone. Keep this file current when code, CI status, known limitations, or the next task changes.
