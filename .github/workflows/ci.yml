@@ -45,6 +45,7 @@ jobs:
           done
 
           node tools/audit.mjs http://127.0.0.1:4173/
+          node tools/sign-audit.mjs http://127.0.0.1:4173/ tools/views-signs.json
           node tools/playthrough.mjs http://127.0.0.1:4173/ 1
           node tools/screenshot.mjs screenshots http://127.0.0.1:4173/ tools/views-delivery.json
 
