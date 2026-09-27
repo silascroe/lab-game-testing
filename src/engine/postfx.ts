@@ -13,11 +13,11 @@ const GradeShader = {
   uniforms: {
     tDiffuse: { value: null as THREE.Texture | null },
     uTime: { value: 0 },
-    uVignette: { value: 0.95 },
-    uGrain: { value: 0.03 },
-    uAberration: { value: 0.0016 },
-    uSaturation: { value: 1.06 },
-    uLift: { value: 0.012 },
+    uVignette: { value: 0.82 },
+    uGrain: { value: 0.018 },
+    uAberration: { value: 0.0008 },
+    uSaturation: { value: 1.02 },
+    uLift: { value: 0.008 },
   },
   vertexShader: /* glsl */ `
     varying vec2 vUv;
@@ -89,7 +89,7 @@ export function createPostFx(
   const renderPass = new RenderPass(scene, camera);
   composer.addPass(renderPass);
 
-  const bloom = new UnrealBloomPass(new THREE.Vector2(size.x, size.y), 0.62, 0.72, 0.72);
+  const bloom = new UnrealBloomPass(new THREE.Vector2(size.x, size.y), 0.34, 0.5, 0.86);
   composer.addPass(bloom);
 
   const grade = new ShaderPass(GradeShader);
@@ -109,7 +109,7 @@ export function createPostFx(
     },
     setQuality: (low) => {
       bloom.enabled = !low;
-      grade.uniforms.uGrain.value = low ? 0.016 : 0.03;
+      grade.uniforms.uGrain.value = low ? 0.01 : 0.018;
     },
     dispose: () => {
       composer.dispose();
