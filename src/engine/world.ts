@@ -398,12 +398,14 @@ export function buildWorld(scene: THREE.Scene, tex: TextureLibrary): WorldHandle
   /* ================= doorway signage ================= */
   {
     // above each door, on the face the player actually approaches from
-    P.wallSign(ctx, { key: "d-airlock", title: "Airlock", symbol: "arrowR", bg: "#c8c2b2" }, -16, 2.5, F.partHubZ, RY["-z"], 1.0, 0.5);
-    P.wallSign(ctx, { key: "d-records", title: "Records", symbol: "arrowR", bg: "#4a5248", fg: "#e8e4d8", accent: "#e8e4d8" }, 0, 2.5, F.partHubZ, RY["-z"], 1.0, 0.5);
-    P.wallSign(ctx, { key: "d-utility", title: "Utility", symbol: "arrowR", bg: "#4a5248", fg: "#e8e4d8", accent: "#e8e4d8" }, 14, 2.5, F.partHubZ, RY["-z"], 1.0, 0.5);
-    P.wallSign(ctx, { key: "d-wetlab", title: "Wet lab", symbol: "arrowL", bg: "#c8c2b2" }, -16, 2.5, F.partNorthZ, RY["+z"], 1.0, 0.5);
-    P.wallSign(ctx, { key: "d-contain", title: "Containment", symbol: "arrowR", bg: "#a8382c", fg: "#f0e8d8", accent: "#f0e8d8" }, 0, 2.5, F.partNorthZ, RY["+z"], 1.3, 0.5);
-    P.wallSign(ctx, { key: "d-control", title: "Control", symbol: "arrowR", bg: "#c8c2b2" }, 14, 2.5, F.partNorthZ, RY["+z"], 1.0, 0.5);
+    P.wallSign(ctx, { key: "d-airlock", title: "Airlock", symbol: "arrowR", bg: "#c8c2b2" }, -16, 2.57, F.partHubZ, RY["-z"], 0.96, 0.44);
+    P.wallSign(ctx, { key: "d-records", title: "Records", symbol: "arrowR", bg: "#4a5248", fg: "#e8e4d8", accent: "#e8e4d8" }, 0, 2.57, F.partHubZ, RY["-z"], 0.96, 0.44);
+    P.wallSign(ctx, { key: "d-utility", title: "Utility", symbol: "arrowR", bg: "#4a5248", fg: "#e8e4d8", accent: "#e8e4d8" }, 14, 2.57, F.partHubZ, RY["-z"], 0.96, 0.44);
+    P.wallSign(ctx, { key: "d-wetlab", title: "Wet lab", symbol: "arrowL", bg: "#c8c2b2" }, -16, 2.57, F.partNorthZ, RY["+z"], 0.96, 0.44);
+    // The cable tray crosses directly above the containment aperture. Keep this plaque
+    // on solid wall to the left so it remains readable from the corridor.
+    P.wallSign(ctx, { key: "d-contain", title: "Containment", symbol: "arrowR", bg: "#a8382c", fg: "#f0e8d8", accent: "#f0e8d8" }, -2.25, 2.36, F.partNorthZ, RY["+z"], 1.28, 0.5);
+    P.wallSign(ctx, { key: "d-control", title: "Control", symbol: "arrowR", bg: "#c8c2b2" }, 14, 2.57, F.partNorthZ, RY["+z"], 0.96, 0.44);
     // archway lintels between the corridor and the hub
     P.wallSign(ctx, { key: "d-hub-l", title: "Main corridor", symbol: "arrowL", bg: "#4a5248", fg: "#e8e4d8", accent: "#e8e4d8" }, -6, 3.08, F.partCorrZ, RY["+z"], 1.4, 0.4);
     P.wallSign(ctx, { key: "d-hub-r", title: "Main corridor", symbol: "arrowR", bg: "#4a5248", fg: "#e8e4d8", accent: "#e8e4d8" }, 6, 3.08, F.partCorrZ, RY["+z"], 1.4, 0.4);
@@ -433,8 +435,9 @@ export function buildWorld(scene: THREE.Scene, tex: TextureLibrary): WorldHandle
     scene.add(haz);
 
     P.wallSign(ctx, { key: "s1", title: "Decontamination", lines: ["Stage 1 · Suit required"], symbol: "bio", bg: "#c9a21c", fg: "#1b1a18", accent: "#1b1a18" }, F.westX, 2.15, 8.4, RY["+x"], 1.35, 0.68);
-    P.wallSign(ctx, { key: "s3", title: "Lift shaft sealed", lines: ["Emergency bulkhead · no access"], symbol: "bolt", bg: "#a8382c", fg: "#f0e8d8", accent: "#f0e8d8" }, F.westX, 2.35, 13.5, RY["+x"], 1.2, 0.6);
-    P.wallSign(ctx, { key: "s2", title: "Airlock", lines: ["Do not open under pressure"], symbol: "none", bg: "#b8b4a6" }, -16, 2.5, F.partHubZ, RY["-z"], 1.0, 0.5);
+    // The lift occupies the wall opening at z=13.5; mounting a sign there embeds it
+    // in the blast door. Put the warning on clear wall beside the opening instead.
+    P.wallSign(ctx, { key: "s3", title: "Lift shaft sealed", lines: ["Emergency bulkhead · no access"], symbol: "bolt", bg: "#a8382c", fg: "#f0e8d8", accent: "#f0e8d8" }, F.westX, 2.18, 11.15, RY["+x"], 1.22, 0.58);
     P.roomStencil(ctx, "3-A", -14.85, 2.3, F.partHubZ, RY["-z"]);
     P.scratchMarks(ctx, -20.85, 1.5, 10.4, Math.PI / 2, 2.0, 1.2);
 
@@ -485,17 +488,15 @@ export function buildWorld(scene: THREE.Scene, tex: TextureLibrary): WorldHandle
     P.pipeRun(ctx, -19.5, 3.05, 2.7, 5.0, 0, 0.06);
     P.pipeRun(ctx, 19.5, 3.05, 2.7, 5.0, Math.PI, 0.06);
 
-    P.wallSign(ctx, { key: "s4", title: "Sector C · Containment", lines: ["Authorised personnel only"], symbol: "bio", bg: "#c8c2b2", accent: "#8d1f1f" }, 9.5, 2.25, F.partCorrZ, RY["+z"], 1.25, 0.62);
-    P.wallSign(ctx, { key: "s5", title: "Utility", symbol: "arrowR", bg: "#4a5248", fg: "#e8e4d8", accent: "#e8e4d8" }, 14, 2.5, F.partHubZ, RY["-z"], 0.95, 0.48);
-    P.wallSign(ctx, { key: "s6", title: "Records", symbol: "arrowL", bg: "#4a5248", fg: "#e8e4d8", accent: "#e8e4d8" }, 0, 2.5, F.partHubZ, RY["-z"], 0.95, 0.48);
-    P.wallSign(ctx, { key: "s7", title: "Airlock", symbol: "arrowR", bg: "#4a5248", fg: "#e8e4d8", accent: "#e8e4d8" }, -16, 2.5, F.partHubZ, RY["-z"], 0.95, 0.48);
+    // Entire plaque sits on solid partition instead of bleeding into the arch opening.
+    P.wallSign(ctx, { key: "s4", title: "Sector C · Containment", lines: ["Authorised personnel only"], symbol: "bio", bg: "#c8c2b2", accent: "#8d1f1f" }, 10.6, 2.2, F.partCorrZ, RY["+z"], 1.25, 0.62);
     P.roomStencil(ctx, "3-B", -18.4, 2.3, F.partHubZ, RY["-z"]);
 
     // lighting
     P.fluorescentFixture(ctx, -14, 2.7, 2.75, 2.4);
     const fx2 = P.fluorescentFixture(ctx, 0.5, 2.7, 2.75, 2.4);
     P.fluorescentFixture(ctx, 15, 2.7, 2.75, 2.4);
-    flickerLights.push({ light: fx2.light, base: 50, rate: 7.0, seed: 0.4 });
+    flickerLights.push({ light: fx2.light, base: 30, rate: 7.0, seed: 0.4 });
     const beacon = P.emergencyLight(ctx, 10.5, 2.9, 5.6, 0xff3322);
     beacons.push({ light: beacon.light, base: 14, phase: 0 });
     P.dustMotes(ctx, 0.5, 1.7, 2.7, 24, 2.6, 5.5, 320);
@@ -513,7 +514,7 @@ export function buildWorld(scene: THREE.Scene, tex: TextureLibrary): WorldHandle
       if (dead) {
         f.tube.material = emissive(0x1a2028, 0.04);
       } else if (i === 5) {
-        flickerLights.push({ light: f.light, base: 48, rate: 9.0, seed: 2.1 });
+        flickerLights.push({ light: f.light, base: 29, rate: 9.0, seed: 2.1 });
       }
     });
     // cable tray + pipes along the north wall
@@ -524,8 +525,7 @@ export function buildWorld(scene: THREE.Scene, tex: TextureLibrary): WorldHandle
     const horn = addBox(ctx, tex.paintedMetal(0x8d1f1f), 0.22, 0.16, 0.16, { x: -9.5, y: 2.6, z: -3.8, castShadow: true });
     horn.castShadow = true;
     P.wallSign(ctx, { key: "s8", title: "Sector B", lines: ["Sub-level 3"], symbol: "none", bg: "#4a5248", fg: "#e8e4d8", accent: "#e8e4d8" }, F.westX, 2.35, -2.25, RY["+x"], 1.0, 0.5);
-    P.wallSign(ctx, { key: "s9", title: "Wet lab", symbol: "arrowL", bg: "#c8c2b2" }, -16, 2.5, F.partNorthZ, RY["+z"], 0.95, 0.48);
-    P.wallSign(ctx, { key: "s10", title: "Control", symbol: "arrowR", bg: "#c8c2b2" }, 14, 2.5, F.partNorthZ, RY["+z"], 0.95, 0.48);
+    // Dedicated doorway plaques above already identify Wet Lab and Control.
     P.roomStencil(ctx, "3-B", -18.4, 2.3, F.partNorthZ, RY["+z"]);
 
     // fallen tiles + debris
@@ -600,7 +600,7 @@ export function buildWorld(scene: THREE.Scene, tex: TextureLibrary): WorldHandle
 
     P.fluorescentFixture(ctx, -13.5, -12.5, 3.15, 2.4);
     const f2 = P.fluorescentFixture(ctx, -17.5, -8.0, 3.15, 2.4);
-    flickerLights.push({ light: f2.light, base: 44, rate: 11.0, seed: 3.3 });
+    flickerLights.push({ light: f2.light, base: 27, rate: 11.0, seed: 3.3 });
     const bench = new THREE.PointLight(0xbfd8ff, 13, 9, 2);
     bench.position.set(-14.5, 2.4, -14.8);
     scene.add(bench);
@@ -737,22 +737,22 @@ export function buildWorld(scene: THREE.Scene, tex: TextureLibrary): WorldHandle
     work.userData.wantsShadow = true;
     work.shadow.mapSize.set(1024, 1024);
     work.shadow.bias = -0.0015;
-    bootLights.push({ light: work, target: 130, delay: 1.4, kind: "on", base: 16 });
+    bootLights.push({ light: work, target: 72, delay: 1.4, kind: "on", base: 10 });
 
     // cold permanent fill: the chamber is visible from the doorway, then the work
     // light slams on when the buses come up
-    const chamberFill = new THREE.PointLight(0x7f96c8, 17, 24, 2);
+    const chamberFill = new THREE.PointLight(0x7f96c8, 9, 24, 2);
     chamberFill.position.set(0, 3.3, -10.5);
     scene.add(chamberFill);
     // two dim corner fills so the shell of the room is legible from the doorway
-    const cornerA = new THREE.PointLight(0x6f86b8, 7, 16, 2);
+    const cornerA = new THREE.PointLight(0x6f86b8, 4, 16, 2);
     cornerA.position.set(-5.6, 3.1, -6.0);
     scene.add(cornerA);
-    const cornerB = new THREE.PointLight(0x6f86b8, 7, 16, 2);
+    const cornerB = new THREE.PointLight(0x6f86b8, 4, 16, 2);
     cornerB.position.set(5.6, 3.1, -6.0);
     scene.add(cornerB);
     // a soft key light raking across the tank so the glass gets a specular edge
-    const tankKey = new THREE.SpotLight(0xbcd2f0, 22, 12, 0.75, 0.7, 1.4);
+    const tankKey = new THREE.SpotLight(0xbcd2f0, 12, 12, 0.75, 0.7, 1.4);
     tankKey.position.set(2.4, 2.9, -7.6);
     tankKey.target.position.set(0, 1.9, -11.5);
     scene.add(tankKey);
@@ -816,7 +816,7 @@ export function buildWorld(scene: THREE.Scene, tex: TextureLibrary): WorldHandle
     const bootLight = new THREE.PointLight(0xcfe0ff, 0.0, 10, 2);
     bootLight.position.set(14, 2.7, -12.0);
     scene.add(bootLight);
-    bootLights.push({ light: bootLight, target: 26, delay: 0.2, kind: "on", base: 2.0 });
+    bootLights.push({ light: bootLight, target: 14, delay: 0.2, kind: "on", base: 1.5 });
     P.dustMotes(ctx, 14, 1.8, -12, 12, 2.6, 10, 200);
 
     // register monitor interactables
@@ -936,7 +936,7 @@ export function buildWorld(scene: THREE.Scene, tex: TextureLibrary): WorldHandle
     P.wallSign(ctx, { key: "s19", title: "Utility", symbol: "none", bg: "#4a5248", fg: "#e8e4d8", accent: "#e8e4d8" }, F.eastX, 2.1, 8.0, RY["-x"], 0.8, 0.4);
     P.roomStencil(ctx, "3-B3", 15.15, 2.3, F.partSouthZ, RY["+z"]);
 
-    const work = new THREE.SpotLight(0xfff0d8, 90, 15, 0.85, 0.5, 1.4);
+    const work = new THREE.SpotLight(0xfff0d8, 48, 15, 0.85, 0.5, 1.4);
     work.position.set(15, 2.95, 12);
     work.target.position.set(15, 0.4, 12);
     scene.add(work);
