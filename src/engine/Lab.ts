@@ -176,6 +176,7 @@ export class Lab {
         stencil: false,
       });
       this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+      this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       this.renderer.setSize(window.innerWidth, window.innerHeight, false);
       const gl = this.renderer.getContext();
       this.software = detectSoftwareRenderer(gl);
@@ -188,7 +189,7 @@ export class Lab {
       this.renderer.outputColorSpace = THREE.SRGBColorSpace;
 
       this.camera = new THREE.PerspectiveCamera(72, window.innerWidth / window.innerHeight, 0.05, 120);
-      this.scene.fog = new THREE.FogExp2(0x101826, 0.0092);
+      this.scene.fog = new THREE.FogExp2(0x101826, 0.0072);
       this.scene.background = new THREE.Color(0x0a0f18);
 
       report(0.1, "Generating materials");
