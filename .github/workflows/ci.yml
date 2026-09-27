@@ -2,7 +2,19 @@ name: CI
 
 on:
   push:
+    paths-ignore:
+      - "README.md"
+      - "AGENTS.md"
+      - "AUDIT_NOTES.md"
   pull_request:
+    paths-ignore:
+      - "README.md"
+      - "AGENTS.md"
+      - "AUDIT_NOTES.md"
+
+concurrency:
+  group: site-orpheus-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   verify:
