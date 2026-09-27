@@ -383,11 +383,12 @@ function signTexture(spec: SignSpec): HTMLCanvasElement {
       ctx.textBaseline = "middle";
       const hasLines = !!(spec.lines && spec.lines.length);
       ctx.font = `700 ${Math.floor(h * (hasLines ? 0.2 : 0.26))}px "Arial Narrow", Arial, sans-serif`;
-      ctx.fillText(spec.title.toUpperCase(), left, h * (hasLines ? 0.38 : 0.5));
+      const maxTextWidth = Math.max(32, w - left - h * 0.12);
+      ctx.fillText(spec.title.toUpperCase(), left, h * (hasLines ? 0.38 : 0.5), maxTextWidth);
       if (hasLines) {
         ctx.font = `500 ${Math.floor(h * 0.115)}px "Arial Narrow", Arial, sans-serif`;
         spec.lines!.forEach((l, i) => {
-          ctx.fillText(l.toUpperCase(), left, h * (0.62 + i * 0.17));
+          ctx.fillText(l.toUpperCase(), left, h * (0.62 + i * 0.17), maxTextWidth);
         });
       }
     }),
