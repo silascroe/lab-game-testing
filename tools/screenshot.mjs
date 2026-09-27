@@ -51,7 +51,7 @@ page.on("pageerror", (e) => errors.push(`[pageerror] ${e.message}`));
 
 fs.mkdirSync(OUT, { recursive: true });
 
-console.log("loading", URL);
+console.log("loading", TARGET_URL);
 await page.goto(TARGET_URL, { waitUntil: "load", timeout: 180000 });
 
 try {
