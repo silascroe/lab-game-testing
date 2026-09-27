@@ -1,25 +1,33 @@
 # Audit notes
 
-## Fixed
+## Current verified head
 
-- The keypad now sends each digit to the game engine. Previously only the fourth digit was sent, so the visible 7419 sequence could never unlock Records.
-- The keypad display now faces the hub, where the player uses it.
-- Procedural sound now starts from the initial user click, as required by browser audio policies.
-- The browser test hook is opt-in with ?test=1; ordinary visits no longer publish the debug API on window.
-- React cleanup now cancels transient keypad/flavor UI timers. The game engine also cancels its progression timers and stops booting cleanly if the component is disposed during initialization.
-- Playwright tools resolve their local test dependency instead of relying on an Arena-specific absolute path. Their routes now physically pass through doorways and approach the keypad and terminal within interaction range.
+Application code is at `f72b914` (2026-09-27), “Make hub hint verification robust to slow renderers.” GitHub Actions CI run #35 for that commit completed successfully.
 
-## Verification
+## Earlier fixes retained
 
-- npm run build and npx tsc --noEmit pass.
-- The generated-world audit reports all seven door openings clear, the spawn clear, and no browser-console errors.
-- Two separate first-person runs completed the power, containment, specimen-log, and ending sequence. Sprint and crouch also passed.
-- The keypad check rejected 1111, accepted 7419, reacquired pointer lock, entered Records, and opened a terminal log.
+- Added a real second interaction to explicitly log the chamber seal; reading specimen 44-B alone no longer triggers completion.
+- Completion now requires physically leaving containment, after which the bulkhead closes.
+- Movement and interaction respect pointer lock and stop behind overlays.
+- The Records keypad is a separate physical control. Each digit is sent to the engine, and its display faces the hub.
+- Added loading progress and a readable WebGL error state; audio starts after the user's first click.
+- The test/debug API is opt-in through `?test=1`.
+- Added geometry, sign-visibility, first-person playthrough, and screenshot checks.
 
-## Cleanup pass
+## Latest verification: CI run #35
 
-- Added an explicit second interaction at the specimen terminal to log chamber seal 44-B. Reading the final record no longer auto-completes the game on a timer.
-- Movement and interaction key handling now respect pointer lock, so the player cannot keep walking behind overlays or after intentionally releasing the mouse.
-- The final state now releases pointer lock, hides the live HUD, and leaves the ending card as the only gameplay overlay.
-- Added `npm run typecheck`, `npm run check`, and CI that re-runs build, geometry audit, and a first-person playthrough on every push and pull request.
-- Removed a no-op React statement and tightened transient flavor-timer cleanup.
+All workflow steps passed on `f72b914`:
+
+- `npm run check`: TypeScript check and production build
+- `tools/audit.mjs`: spawn and door-opening geometry
+- `tools/sign-audit.mjs`: expected signs visible from approach views
+- `tools/playthrough.mjs ... 1`: one full main objective route plus a separate Records keypad route
+- `tools/screenshot.mjs`: delivery-view PNG captures uploaded as `site-orpheus-screenshots`
+
+The keypad route rejects `1111`, accepts `7419`, enters Records, and opens a terminal log. The objective route restores both auxiliary buses, reads the specimen record, explicitly logs the seal, and exits containment before the ending state.
+
+## Limits of this verification
+
+CI uses Chromium with SwiftShader; the workflow does not enable the optional hardware-GPU screenshot path. These checks establish that the app builds, interactions and movement complete the scripted routes, and expected signage is visible in the tested views. They do not replace a human visual review on the target GPU.
+
+Older notes about a red CI run, a stalled keypad route, or sprint/crouch checks after the ending were superseded by later commits and the successful run #35.
