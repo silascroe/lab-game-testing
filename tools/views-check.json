@@ -1,0 +1,8 @@
+[
+  { "name": "c1-containment-tank", "x": 0, "z": -7.0, "yaw": 0.0, "pitch": 0.08, "power": true, "settle": 1500 },
+  { "name": "c2-containment-side", "x": 4.2, "z": -8.5, "yaw": 1.25, "pitch": 0.04, "power": true, "settle": 1200 },
+  { "name": "c3-control", "x": 11.5, "z": -8.6, "yaw": 3.1416, "pitch": -0.1, "power": true, "settle": 1300 },
+  { "name": "c4-airlock", "x": -15.0, "z": 10.0, "yaw": 1.5708, "pitch": 0.05, "settle": 1100 },
+  { "name": "c5-server", "x": -1.0, "z": 12.5, "yaw": 0.0, "pitch": 0.02, "settle": 1100 },
+  { "name": "c6-utility", "x": 11.0, "z": 11.0, "yaw": -1.5708, "pitch": 0.06, "settle": 1100 }
+]

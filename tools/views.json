@@ -1,0 +1,17 @@
+[
+  { "name": "01-airlock-entry", "x": -14, "z": 13.5, "yaw": 0.0, "pitch": -0.02, "settle": 1200 },
+  { "name": "02-airlock-lift", "x": -15.5, "z": 13.5, "yaw": 1.5708, "pitch": 0.0, "settle": 1000 },
+  { "name": "03-hub", "x": 8.0, "z": 3.0, "yaw": 1.5708, "pitch": 0.02, "settle": 1000 },
+  { "name": "04-corridor-north", "x": 0, "z": -2.25, "yaw": 0.0, "pitch": 0.0, "settle": 1200 },
+  { "name": "05-corridor-south", "x": -6, "z": -2.25, "yaw": 3.1416, "pitch": 0.0, "settle": 1000 },
+  { "name": "06-wetlab-bench", "x": -14.5, "z": -11.5, "yaw": 3.1416, "pitch": -0.03, "settle": 1000 },
+  { "name": "07-wetlab-fumehood", "x": -16.5, "z": -13.0, "yaw": 0.35, "pitch": 0.0, "settle": 1000 },
+  { "name": "08-containment-door", "x": 0, "z": -5.5, "yaw": 0.0, "pitch": 0.02, "settle": 1000 },
+  { "name": "09-containment-tank", "x": 0, "z": -6.5, "yaw": 0.0, "pitch": 0.04, "power": true, "settle": 1200 },
+  { "name": "10-containment-tank-side", "x": 4.6, "z": -9.0, "yaw": 1.35, "pitch": 0.02, "power": true, "settle": 1000 },
+  { "name": "11-control-window", "x": 12.0, "z": -9.6, "yaw": 1.5708, "pitch": 0.05, "settle": 1000 },
+  { "name": "12-control-desk", "x": 11.5, "z": -8.4, "yaw": 3.1416, "pitch": -0.12, "power": true, "settle": 1000 },
+  { "name": "13-server-racks", "x": -1.5, "z": 13.0, "yaw": 0.0, "pitch": 0.0, "settle": 1000 },
+  { "name": "14-utility-panel", "x": 11.0, "z": 12.0, "yaw": 1.5708, "pitch": -0.05, "settle": 1000 },
+  { "name": "15-utility-transformer", "x": 14.5, "z": 12.0, "yaw": -1.5708, "pitch": 0.0, "settle": 1000 }
+]

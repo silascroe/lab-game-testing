@@ -1,0 +1,11 @@
+[
+  { "name": "f1-airlock", "x": -14, "z": 13.5, "yaw": 0.0, "pitch": -0.02, "settle": 1200 },
+  { "name": "f2-hub", "x": 6.0, "z": 3.0, "yaw": 1.5708, "pitch": 0.02, "settle": 1000 },
+  { "name": "f3-corridor", "x": 12.0, "z": -2.25, "yaw": 3.1416, "pitch": 0.0, "settle": 1000 },
+  { "name": "f4-wetlab", "x": -13.0, "z": -10.5, "yaw": 3.1416, "pitch": -0.02, "settle": 1000 },
+  { "name": "f5-containment-door", "x": 0, "z": -5.0, "yaw": 0.0, "pitch": 0.06, "settle": 1000 },
+  { "name": "f6-containment-tank", "x": 0, "z": -7.0, "yaw": 0.0, "pitch": 0.08, "power": true, "settle": 1400 },
+  { "name": "f7-control", "x": 11.5, "z": -8.6, "yaw": 3.1416, "pitch": -0.1, "power": true, "settle": 1200 },
+  { "name": "f8-server", "x": -1.0, "z": 12.5, "yaw": 0.0, "pitch": 0.02, "settle": 1000 },
+  { "name": "f9-utility", "x": 11.0, "z": 11.0, "yaw": -1.5708, "pitch": 0.06, "settle": 1000 }
+]
