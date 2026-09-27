@@ -251,6 +251,21 @@ for (let run = 1; run <= RUNS; run++) {
   s = await state();
   check(s.zone.includes("MAIN CORRIDOR"), "arrived in the main corridor", s.zone);
 
+  // Movement sanity belongs before the terminal ending disables gameplay input.
+  await page.keyboard.down("Shift");
+  await page.keyboard.down("w");
+  await sleep(700);
+  const sprinting = await state();
+  await page.keyboard.up("w");
+  await page.keyboard.up("Shift");
+  check(sprinting.sprinting, "sprint engaged", `sprinting=${sprinting.sprinting}`);
+
+  await page.keyboard.down("c");
+  await sleep(350);
+  const crouched = await state();
+  await page.keyboard.up("c");
+  check(crouched.crouching, "crouch engaged", `crouching=${crouched.crouching}`);
+
   // --- 5. corridor -> containment chamber ----------------------------
   check(await walkTo(0, -2.25, "containment bulkhead"), "walked to the containment bulkhead");
   await sleep(1200);
@@ -288,22 +303,7 @@ for (let run = 1; run <= RUNS; run++) {
   const endText = await page.evaluate(() => document.body.innerText);
   check(/SEAL LOGGED/i.test(endText), "ending card displayed");
 
-  // --- 8. sprint + crouch sanity -------------------------------------
-  await page.evaluate(() => window.__lab.getState());
-  await page.keyboard.down("Shift");
-  await page.keyboard.down("w");
-  await sleep(900);
-  const sprinting = await state();
-  await page.keyboard.up("w");
-  await page.keyboard.up("Shift");
-  check(sprinting.sprinting, "sprint engaged", `sprinting=${sprinting.sprinting}`);
-  await page.keyboard.down("c");
-  await sleep(500);
-  const crouched = await state();
-  await page.keyboard.up("c");
-  check(crouched.crouching, "crouch engaged", `crouching=${crouched.crouching}`);
-
-  // --- 9. did we ever leave the map? ---------------------------------
+  // --- 8. did we ever leave the map? ---------------------------------
   s = await state();
   check(Math.abs(s.x) < 21 && Math.abs(s.z) < 17, "player stayed inside the facility", `(${s.x.toFixed(2)}, ${s.z.toFixed(2)})`);
 }
@@ -320,7 +320,12 @@ await sleep(600);
 
 check(await walkTo(-16, 9.0, "airlock door"), "walked to the airlock door");
 check(await walkTo(-16, 3.5, "hub"), "entered the hub");
-check(await approach("Keypad", 1.0), "walked within range and aimed at the records keypad");
+
+// Approach from the hub side of the wall instead of taking a straight-line route
+// through the closed Records door/frame. The old generic approach could wedge the
+// player on the doorway edge even though the keypad itself was reachable.
+check(await walkTo(1.05, 4.25, "records keypad clear approach"), "walked to the clear side of the records keypad");
+check(await aimAt(1.05, 1.27, 5.75, "Keypad"), "aimed at the records keypad");
 check(await interact("Keypad"), "interacted with the keypad");
 await sleep(400);
 let kp = await page.evaluate(() => document.body.innerText.includes("RECORDS · ACCESS"));
