@@ -1,0 +1,6 @@
+[
+  { "name": "01-airlock-entry", "x": -14, "z": 13.5, "yaw": 0.0, "pitch": -0.02, "settle": 1200 },
+  { "name": "04-corridor-north", "x": 0, "z": -2.25, "yaw": 0.0, "pitch": 0.0, "settle": 1200 },
+  { "name": "09-containment-tank", "x": 0, "z": -6.5, "yaw": 0.0, "pitch": 0.04, "power": true, "settle": 1200 },
+  { "name": "12-control-desk", "x": 11.5, "z": -8.4, "yaw": 3.1416, "pitch": -0.12, "power": true, "settle": 1200 }
+]

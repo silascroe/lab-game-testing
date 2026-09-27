@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install app dependencies
+        run: npm ci
+
+      - name: Type-check and build
+        run: npm run check
+
+      - name: Install browser test dependencies
+        run: |
+          npm ci --prefix .testkit
+          npx --prefix .testkit playwright install --with-deps chromium
+
+      - name: Geometry audit and first-person playthrough
+        run: |
+          npm run preview -- --host 127.0.0.1 > /tmp/orpheus-vite.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID 2>/dev/null || true' EXIT
+
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then
+              break
+            fi
+            if [ "$i" -eq 30 ]; then
+              cat /tmp/orpheus-vite.log
+              exit 1
+            fi
+            sleep 1
+          done
+
+          node tools/audit.mjs http://127.0.0.1:4173/
+          node tools/playthrough.mjs http://127.0.0.1:4173/ 1
