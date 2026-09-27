@@ -1,9 +1,61 @@
 [
-  { "name": "01-airlock-entry", "x": -14.0, "z": 13.5, "yaw": 0.0, "pitch": -0.02, "settle": 1200 },
-  { "name": "02-central-hub", "x": 8.0, "z": 3.0, "yaw": 1.5708, "pitch": 0.02, "settle": 1000 },
-  { "name": "03-main-corridor", "x": 12.0, "z": -2.25, "yaw": 1.5708, "pitch": 0.0, "settle": 1000 },
-  { "name": "04-wet-lab", "x": -10.0, "z": -7.5, "yaw": 0.69, "pitch": -0.03, "settle": 1000 },
-  { "name": "05-containment", "x": -4.0, "z": -6.8, "yaw": 0.71, "pitch": 0.04, "power": true, "settle": 1700 },
-  { "name": "06-control-room", "x": 17.5, "z": -7.2, "yaw": 1.03, "pitch": -0.06, "power": true, "settle": 1400 },
-  { "name": "07-utility", "x": 11.0, "z": 11.0, "yaw": -1.5708, "pitch": 0.04, "power": true, "settle": 1400 }
+  {
+    "name": "01-airlock-entry",
+    "x": -14,
+    "z": 13.5,
+    "yaw": 0,
+    "pitch": -0.02,
+    "settle": 1200
+  },
+  {
+    "name": "02-central-hub",
+    "x": 8,
+    "z": 3,
+    "yaw": 1.5708,
+    "pitch": 0.02,
+    "settle": 1000
+  },
+  {
+    "name": "03-main-corridor",
+    "x": 12,
+    "z": -2.25,
+    "yaw": 1.5708,
+    "pitch": 0,
+    "settle": 1000
+  },
+  {
+    "name": "04-wet-lab",
+    "x": -10,
+    "z": -7.5,
+    "yaw": 0.69,
+    "pitch": -0.03,
+    "settle": 1000
+  },
+  {
+    "name": "05-containment",
+    "x": -4,
+    "z": -6.8,
+    "yaw": -0.71,
+    "pitch": 0.02,
+    "power": true,
+    "settle": 1700
+  },
+  {
+    "name": "06-control-room",
+    "x": 17.5,
+    "z": -7.2,
+    "yaw": 1.03,
+    "pitch": -0.06,
+    "power": true,
+    "settle": 1400
+  },
+  {
+    "name": "07-utility",
+    "x": 11,
+    "z": 11,
+    "yaw": -1.5708,
+    "pitch": 0.04,
+    "power": true,
+    "settle": 1400
+  }
 ]
