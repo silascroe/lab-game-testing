@@ -238,6 +238,7 @@ export function buildWorld(scene: THREE.Scene, tex: TextureLibrary): WorldHandle
   const flickerLights: { light: THREE.PointLight; base: number; rate: number; seed: number }[] = [];
   const beacons: { light: THREE.PointLight; base: number; phase: number }[] = [];
   const tankPulse: { light: THREE.PointLight; mat: THREE.MeshStandardMaterial }[] = [];
+  const statusLeds: THREE.Mesh[] = [];
   const drips: { x: number; y: number; z: number }[] = [];
   let power = false;
   let bootT = 0;
@@ -669,7 +670,17 @@ export function buildWorld(scene: THREE.Scene, tex: TextureLibrary): WorldHandle
     // shards on the platform
     P.glassShards(ctx, 1.9, -10.4, 1.1, 30, 101);
 
-    // shattered observation window (from the control room side)
+    // Reinforced observation opening between Control and Containment. The structural
+    // frame survives; most of the glass does not. This gives the chamber a deliberate
+    // architectural focal point instead of reading like a random hole in the wall.
+    const obsFrameMat = tex.paintedMetal(0x34383a);
+    for (const z of [-12.6, -9.5, -6.4]) {
+      addBox(ctx, obsFrameMat, 0.2, 1.52, 0.12, { x: 7.0, y: 1.85, z, castShadow: true, uvScale: 0.45 });
+    }
+    addBox(ctx, obsFrameMat, 0.2, 0.12, 6.2, { x: 7.0, y: 1.15, z: -9.5, castShadow: true, uvScale: 0.45 });
+    addBox(ctx, obsFrameMat, 0.2, 0.12, 6.2, { x: 7.0, y: 2.55, z: -9.5, castShadow: true, uvScale: 0.45 });
+
+    // A few pieces remain in the failed pane; the rest is on the floor.
     for (let i = 0; i < 5; i++) {
       const shard = new THREE.Mesh(planeGeo(0.5 + i * 0.12, 0.4 + (i % 2) * 0.2, 1), tex.glass(0xa8ccd8, 0.1));
       shard.position.set(7.0, 1.75 + (i % 2) * 0.15, -12.4 + i * 0.35);
@@ -782,6 +793,8 @@ export function buildWorld(scene: THREE.Scene, tex: TextureLibrary): WorldHandle
     for (let i = 0; i < 12; i++) {
       const led = addBox(ctx, emissive(0x2a1a10, 0.2), 0.07, 0.05, 0.03, { x: 9.5 + i * 0.34, y: stripY, z: -16.6 });
       led.castShadow = false;
+      led.userData.powerLit = false;
+      statusLeds.push(led);
     }
 
     P.officeChair(ctx, 10.6, -9.3, Math.PI);
@@ -1169,11 +1182,20 @@ export function buildWorld(scene: THREE.Scene, tex: TextureLibrary): WorldHandle
       b.light.intensity = b.base * (0.35 + 0.65 * Math.max(0, Math.sin(t * 1.6 + b.phase)));
     }
 
+    // Control-room annunciators wake one by one after the buses return.
+    statusLeds.forEach((led, i) => {
+      const shouldGlow = power && bootT > 0.65 + i * 0.08;
+      if (shouldGlow === led.userData.powerLit) return;
+      led.userData.powerLit = shouldGlow;
+      const color = i === 7 ? 0xc85143 : i % 4 === 0 ? 0xd2a64a : 0x5fb985;
+      led.material = shouldGlow ? emissive(color, 1.8) : emissive(0x2a1a10, 0.2);
+    });
+
     // specimen pulse
     for (const p of tankPulse) {
       const s = 0.55 + 0.45 * Math.sin(t * 0.9);
-      p.light.intensity = power ? 26 * s : 6 * s;
-      p.mat.emissiveIntensity = power ? 1.1 + 0.6 * s : 0.45;
+      p.light.intensity = power ? 20 * s : 4.5 * s;
+      p.mat.emissiveIntensity = power ? 1.0 + 0.45 * s : 0.4;
     }
   }
 
