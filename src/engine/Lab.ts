@@ -760,6 +760,68 @@ export class Lab {
       .sort((a, b) => a.dist - b.dist);
   }
 
+  /**
+   * Visual signage audit used by the browser test harness. It checks the actual rendered
+   * scene from the current camera: a sign must be inside the frustum and be the first
+   * mesh hit by a ray from the player's eye. This catches plaques hidden behind doors,
+   * beams, pipes, or wall geometry even when the texture itself is perfectly valid.
+   */
+  auditSigns() {
+    this.scene.updateMatrixWorld(true);
+    this.camera.updateMatrixWorld(true);
+
+    const signs: THREE.Mesh[] = [];
+    this.scene.traverse((o) => {
+      const m = o as THREE.Mesh;
+      if (m.isMesh && m.userData.kind === "sign") signs.push(m);
+    });
+
+    const raycaster = new THREE.Raycaster();
+    const world = new THREE.Vector3();
+    const ndc = new THREE.Vector3();
+    const dir = new THREE.Vector3();
+
+    return signs.map((sign) => {
+      sign.getWorldPosition(world);
+      ndc.copy(world).project(this.camera);
+      const inViewport =
+        ndc.x >= -1.02 &&
+        ndc.x <= 1.02 &&
+        ndc.y >= -1.02 &&
+        ndc.y <= 1.02 &&
+        ndc.z >= -1 &&
+        ndc.z <= 1;
+
+      dir.copy(world).sub(this.camera.position);
+      const distance = dir.length();
+      dir.normalize();
+      raycaster.set(this.camera.position, dir);
+      raycaster.near = 0.02;
+      raycaster.far = distance + 0.08;
+
+      const hit = raycaster
+        .intersectObjects(this.scene.children, true)
+        .find((h) => (h.object as THREE.Mesh).isMesh);
+      const key = String(sign.userData.signKey ?? "");
+      const visible = !!hit && hit.object.userData.signKey === key;
+
+      return {
+        key,
+        x: +world.x.toFixed(3),
+        y: +world.y.toFixed(3),
+        z: +world.z.toFixed(3),
+        distance: +distance.toFixed(3),
+        screenX: +ndc.x.toFixed(3),
+        screenY: +ndc.y.toFixed(3),
+        inViewport,
+        visible,
+        firstHit: hit
+          ? String(hit.object.userData.signKey ?? hit.object.userData.kind ?? hit.object.type)
+          : null,
+      };
+    });
+  }
+
   /** World positions of every interactable (read-only, used by the automated playthrough). */
   interactables() {
     const v = new THREE.Vector3();
