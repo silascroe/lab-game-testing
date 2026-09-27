@@ -351,14 +351,32 @@ export function wallSign(
   ry: number,
   w = 0.9,
   h = 0.45,
-  offset = 0.028,
+  offset = 0.035,
 ): THREE.Mesh {
   const nx = Math.sin(ry);
   const nz = Math.cos(ry);
+  const depth = 0.035;
+
+  // Treat signage as an actual mounted object instead of a decal. The shallow
+  // backplate keeps it off rough walls, makes the silhouette read in raking light,
+  // and prevents the "half swallowed by the wall" look that flat planes produced.
+  addBox(ctx, ctx.tex.paintedMetal(0x24282b), w + 0.07, h + 0.07, depth, {
+    x: x + nx * (offset + depth * 0.5),
+    y,
+    z: z + nz * (offset + depth * 0.5),
+    ry,
+    castShadow: true,
+    receiveShadow: true,
+    uvScale: 0.5,
+  });
+
   const mesh = new THREE.Mesh(planeGeo(w, h, 1), ctx.tex.sign(spec));
-  mesh.position.set(x + nx * offset, y, z + nz * offset);
+  mesh.position.set(x + nx * (offset + depth + 0.004), y, z + nz * (offset + depth + 0.004));
   mesh.rotation.y = ry;
   mesh.receiveShadow = true;
+  mesh.userData.kind = "sign";
+  mesh.userData.signKey = spec.key;
+  mesh.renderOrder = 2;
   ctx.scene.add(mesh);
   return mesh;
 }
@@ -1249,9 +1267,12 @@ export function lightShaft(
     map: ctx.tex.shaftSprite(),
     color,
     transparent: true,
-    opacity: intensity,
+    // These are atmosphere, not geometry. Keep them faint enough that the
+    // cylinder silhouette never reads as a giant translucent cone.
+    opacity: Math.min(0.11, intensity * 0.28),
     blending: THREE.AdditiveBlending,
     depthWrite: false,
+    depthTest: true,
     side: THREE.DoubleSide,
   });
   const mesh = new THREE.Mesh(geo, mat);
