@@ -380,6 +380,7 @@ export class Lab {
       this.player.update(dt, this.input);
       this.world.update(t, dt);
       this.updateZone();
+      this.updateEscapeBeat();
       this.updateInteraction();
       this.updateDoors();
       this.postfx.update(t);
@@ -494,10 +495,28 @@ export class Lab {
     this.stage = n;
     const obj = OBJECTIVES[Math.min(n, OBJECTIVES.length - 1)];
     this.cb.onObjective?.(obj);
-    if (n >= 4 && !this.finished) {
-      this.finished = true;
-      this.schedule(() => this.cb.onFinished?.(), 2200);
+  }
+
+  /**
+   * Logging the seal is not the ending by itself. The player has to physically clear
+   * the chamber; only then does the containment bulkhead close and lock behind them.
+   * This gives the final interaction a spatial consequence instead of ending on a UI click.
+   */
+  private updateEscapeBeat(): void {
+    if (this.stage !== 4 || this.finished) return;
+    const p = this.player.position;
+    const clearOfBulkhead = p.z > -2.55 && Math.abs(p.x) < 7.0;
+    if (!clearOfBulkhead) return;
+
+    const door = this.world.doors.get("containment");
+    if (door) {
+      door.setOpen(false);
+      door.locked = true;
     }
+    this.ambience.play("doorClose");
+    this.cb.onFlavor?.("The containment bulkhead slams shut behind you. The magnetic seal catches.");
+    this.finished = true;
+    this.schedule(() => this.cb.onFinished?.(), 1500);
   }
 
   /* ------------------------------------------------------------------ */

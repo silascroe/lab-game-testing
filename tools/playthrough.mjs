@@ -296,10 +296,17 @@ for (let run = 1; run <= RUNS; run++) {
   // --- 7. explicitly log the chamber seal ----------------------------
   check(await approach("Log chamber seal"), "faced the chamber seal acknowledgement");
   check(await interact("Log chamber seal"), "logged the chamber seal");
-  await sleep(2600);
+  await sleep(500);
   s = await state();
   check(s.stage >= 4, "objective advanced to stage 4 after seal acknowledgement", `stage=${s.stage}`);
-  check(s.finished, "facility completion state reached", `finished=${s.finished} stage=${s.stage}`);
+  check(!s.finished, "seal log alone does not end the facility");
+
+  // The last beat is spatial: physically leave containment and let the bulkhead
+  // close behind the player.
+  check(await walkTo(0, -2.2, "clear of containment"), "cleared the containment bulkhead");
+  await sleep(1900);
+  s = await state();
+  check(s.finished, "facility completion state reached after clearing the chamber", `finished=${s.finished} stage=${s.stage}`);
   const endText = await page.evaluate(() => document.body.innerText);
   check(/SEAL LOGGED/i.test(endText), "ending card displayed");
 
