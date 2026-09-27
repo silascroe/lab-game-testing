@@ -21,6 +21,8 @@ const appUrl = new URL(process.argv[3] || "http://127.0.0.1:4173/");
 appUrl.searchParams.set("test", "1");
 const TARGET_URL = appUrl.toString();
 const VIEWS = JSON.parse(fs.readFileSync(process.argv[4] || "tools/views.json", "utf8"));
+const FAST_PREVIEW = process.env.ORPHEUS_PREVIEW === "1";
+const USE_HARDWARE_GPU = process.env.ORPHEUS_GPU === "1";
 
 const HIDE_UI = `
   const s = document.createElement('style');
@@ -29,19 +31,22 @@ const HIDE_UI = `
   document.head.appendChild(s);
 `;
 
-const browser = await chromium.launch({
-  args: [
-    "--use-gl=angle",
-    "--use-angle=swiftshader",
-    "--enable-unsafe-swiftshader",
-    "--disable-gpu-sandbox",
-    "--no-sandbox",
-    "--enable-webgl",
-    "--ignore-gpu-blocklist",
-  ],
-});
+const browserArgs = [
+  "--use-gl=angle",
+  "--disable-gpu-sandbox",
+  "--no-sandbox",
+  "--enable-webgl",
+  "--ignore-gpu-blocklist",
+];
+if (!USE_HARDWARE_GPU) {
+  browserArgs.push("--use-angle=swiftshader", "--enable-unsafe-swiftshader");
+}
 
-const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+const browser = await chromium.launch({ args: browserArgs });
+
+const page = await browser.newPage({
+  viewport: FAST_PREVIEW ? { width: 640, height: 360 } : { width: 1280, height: 720 },
+});
 page.setDefaultTimeout(180000);
 const errors = [];
 page.on("console", (m) => {
@@ -51,7 +56,12 @@ page.on("pageerror", (e) => errors.push(`[pageerror] ${e.message}`));
 
 fs.mkdirSync(OUT, { recursive: true });
 
-console.log("loading", TARGET_URL);
+console.log(
+  "loading",
+  TARGET_URL,
+  USE_HARDWARE_GPU ? "(hardware GPU requested)" : "(SwiftShader)",
+  FAST_PREVIEW ? "(compact review images)" : "(delivery images)",
+);
 await page.goto(TARGET_URL, { waitUntil: "load", timeout: 180000 });
 
 try {
@@ -99,8 +109,13 @@ for (const v of VIEWS) {
   await page.waitForTimeout(v.settle ?? 900);
   await page.evaluate(() => window.__lab.renderNow());
   await page.waitForTimeout(150);
-  const file = path.join(OUT, `${v.name}.png`);
-  await page.screenshot({ path: file });
+  const ext = FAST_PREVIEW ? "jpg" : "png";
+  const file = path.join(OUT, `${v.name}.${ext}`);
+  await page.screenshot(
+    FAST_PREVIEW
+      ? { path: file, type: "jpeg", quality: 72 }
+      : { path: file, type: "png" },
+  );
   console.log("shot", v.name, (fs.statSync(file).size / 1024).toFixed(0) + "kb");
 }
 
