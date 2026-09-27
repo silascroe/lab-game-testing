@@ -184,7 +184,7 @@ export class Lab {
       this.dprOverride = Number(new URLSearchParams(window.location.search).get("dpr")) || 0;
       this.applyQuality();
       this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      this.renderer.toneMappingExposure = 1.35;
+      this.renderer.toneMappingExposure = 1.05;
       this.renderer.outputColorSpace = THREE.SRGBColorSpace;
 
       this.camera = new THREE.PerspectiveCamera(72, window.innerWidth / window.innerHeight, 0.05, 120);
@@ -240,12 +240,12 @@ export class Lab {
       // Base ambience. Hemisphere lights tint upward faces with `sky` and downward
       // faces with `ground`, so both the floor AND the ceiling need a real value or
       // the architecture reads as a black void. Two of them cross-fill the room.
-      const hemi = new THREE.HemisphereLight(0x9fb4d8, 0x76808f, 1.55);
+      const hemi = new THREE.HemisphereLight(0x9fb4d8, 0x76808f, 1.05);
       this.scene.add(hemi);
-      const bounce = new THREE.HemisphereLight(0x5f7098, 0x5e6874, 0.42);
+      const bounce = new THREE.HemisphereLight(0x5f7098, 0x5e6874, 0.26);
       bounce.position.set(0, -1, 0);
       this.scene.add(bounce);
-      const fill = new THREE.DirectionalLight(0xa8bedd, 0.55);
+      const fill = new THREE.DirectionalLight(0xa8bedd, 0.34);
       fill.position.set(0.35, 1, 0.2);
       this.scene.add(fill);
 
