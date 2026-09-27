@@ -1,10 +1,10 @@
 [
-  { "name": "s1-airlock-signs", "x": -15.5, "z": 10.5, "yaw": 1.5708, "pitch": 0.12, "settle": 1000 },
-  { "name": "s2-hub-doors", "x": -6, "z": 3.6, "yaw": -1.5708, "pitch": 0.22, "settle": 1000 },
-  { "name": "s3-corridor-doors", "x": -6, "z": -2.25, "yaw": 0.0, "pitch": 0.2, "settle": 1000 },
-  { "name": "s4-wetlab", "x": -13.0, "z": -13.0, "yaw": 0.0, "pitch": 0.16, "settle": 1000 },
-  { "name": "s5-containment", "x": 0, "z": -6.5, "yaw": 0.0, "pitch": 0.05, "power": true, "settle": 1200 },
-  { "name": "s6-control", "x": 13.0, "z": -12.5, "yaw": 1.5708, "pitch": 0.1, "power": true, "settle": 1200 },
-  { "name": "s7-server", "x": 0, "z": 9.5, "yaw": 3.1416, "pitch": 0.1, "settle": 1000 },
-  { "name": "s8-utility", "x": 11.5, "z": 11.0, "yaw": -1.5708, "pitch": 0.1, "settle": 1000 }
+  { "name": "lift-warning", "x": -17.5, "z": 11.15, "yaw": 1.5708, "pitch": 0.08, "expect": ["s3"] },
+  { "name": "airlock-door", "x": -16.0, "z": 3.5, "yaw": 3.1416, "pitch": 0.12, "expect": ["d-airlock"] },
+  { "name": "records-door", "x": 0.0, "z": 3.5, "yaw": 3.1416, "pitch": 0.12, "expect": ["d-records"] },
+  { "name": "utility-door", "x": 14.0, "z": 3.5, "yaw": 3.1416, "pitch": 0.12, "expect": ["d-utility"] },
+  { "name": "wetlab-door", "x": -16.0, "z": -1.5, "yaw": 0.0, "pitch": 0.12, "expect": ["d-wetlab"] },
+  { "name": "containment-door", "x": -2.25, "z": -1.4, "yaw": 0.0, "pitch": 0.1, "expect": ["d-contain"] },
+  { "name": "control-door", "x": 14.0, "z": -1.5, "yaw": 0.0, "pitch": 0.12, "expect": ["d-control"] },
+  { "name": "sector-c", "x": 10.6, "z": 2.6, "yaw": 0.0, "pitch": 0.06, "expect": ["s4"] }
 ]
