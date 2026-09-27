@@ -1050,18 +1050,14 @@ export function buildWorld(scene: THREE.Scene, tex: TextureLibrary): WorldHandle
     scene.add(anchor);
     makeInteractable(ctx, {
       id: `door:${id}`,
-      kind: id === "server" ? "keypad" : "door",
+      kind: "door",
       label: doorLabels[id] ?? "Door",
       object: anchor,
       range: 2.9,
       onUse: () => {
         if (door.locked) {
-          if (id === "server") {
-            hooks.keypad?.(id);
-          } else {
-            hooks.flavor?.(doorLockedMessage(id));
-            sound("locked");
-          }
+          hooks.flavor?.(doorLockedMessage(id));
+          sound("locked");
           return;
         }
         door.setOpen(!door.isOpen());
@@ -1070,20 +1066,60 @@ export function buildWorld(scene: THREE.Scene, tex: TextureLibrary): WorldHandle
     });
   });
 
-  // keypad beside the records door
+  // keypad beside the records door. It is intentionally a distinct physical
+  // control rather than letting the locked door itself summon a fullscreen keypad.
   {
-    const pad = addBox(ctx, tex.paintedMetal(0x2f322e), 0.16, 0.22, 0.05, { x: 1.05, y: 1.25, z: 5.78, castShadow: true });
+    const padX = 1.08;
+    const padY = 1.28;
+    const padZ = 5.77;
+    const pad = addBox(ctx, tex.paintedMetal(0x2f322e), 0.24, 0.38, 0.07, {
+      x: padX,
+      y: padY,
+      z: padZ,
+      castShadow: true,
+      receiveShadow: true,
+      uvScale: 0.4,
+    });
     pad.castShadow = true;
-    const padScreen = new THREE.Mesh(planeGeo(0.11, 0.07, 1), tex.crtOffMaterial());
-    padScreen.position.set(1.05, 1.27, 5.75);
+
+    const screenMat = new THREE.MeshStandardMaterial({
+      color: 0x1b332c,
+      emissive: 0x2d8a68,
+      emissiveIntensity: 0.75,
+      roughness: 0.45,
+      metalness: 0.05,
+    });
+    const padScreen = new THREE.Mesh(planeGeo(0.15, 0.075, 1), screenMat);
+    padScreen.position.set(padX, padY + 0.105, padZ - 0.038);
     padScreen.rotation.y = Math.PI;
     scene.add(padScreen);
+
+    const keyMat = tex.paintedMetal(0x5c625d);
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 3; col++) {
+        addBox(ctx, keyMat, 0.042, 0.035, 0.014, {
+          x: padX + (col - 1) * 0.057,
+          y: padY + 0.025 - row * 0.047,
+          z: padZ - 0.043,
+          castShadow: true,
+          uvScale: 0.25,
+        });
+      }
+    }
+
+    const readyLed = addBox(ctx, emissive(0x59c58d, 1.8), 0.025, 0.012, 0.008, {
+      x: padX + 0.085,
+      y: padY + 0.155,
+      z: padZ - 0.044,
+    });
+    readyLed.castShadow = false;
+
     makeInteractable(ctx, {
       id: "keypad",
       kind: "keypad",
       label: "Keypad",
       object: padScreen,
-      range: 2.0,
+      range: 2.35,
       onUse: () => hooks.keypad?.("server"),
     });
   }
