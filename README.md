@@ -1,5 +1,7 @@
 # Site Orpheus
 
+For agent handoff, current verification status, and continuation instructions, see [`AGENTS.md`](./AGENTS.md).
+
 A compact first-person Three.js environment set inside a decommissioned underground biotech facility. The build is intentionally environment-first: movement, spatial coherence, lighting, procedural materials, audio, signage, and environmental storytelling matter more than adding game systems for their own sake.
 
 The current route starts in the decontamination airlock, opens into a damaged central hub, and branches into the wet lab, records/server room, utility room, control room, and containment chamber. The light objective is to restore both auxiliary buses, release the containment interlock, inspect specimen 44-B, and log the chamber seal.
