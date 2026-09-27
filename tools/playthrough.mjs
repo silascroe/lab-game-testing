@@ -209,16 +209,18 @@ for (let run = 1; run <= RUNS; run++) {
 
   // --- 1. airlock -> hub ---------------------------------------------
   check(await walkTo(-16, 9.0, "airlock door approach"), "walked to the airlock door");
+
+  // The hint can legitimately appear while a slow software-rendered test client is
+  // still crossing the doorway. Watch for it concurrently instead of only after
+  // reaching the navigation target, otherwise the test can miss a valid transient UI.
+  const hubHintSeen = page
+    .waitForFunction(() => /Utility east/i.test(document.body.innerText), { timeout: 30000, polling: 100 })
+    .then(() => true)
+    .catch(() => false);
   check(await walkTo(-16, 3.5, "into the hub"), "walked through the airlock door into the hub");
   s = await state();
   check(s.zone.includes("CENTRAL HUB"), "arrived in the central hub", s.zone);
-  let hintSeen = false;
-  for (let i = 0; i < 60 && !hintSeen; i++) {
-    const txt = await page.evaluate(() => document.body.innerText);
-    hintSeen = /Utility east/i.test(txt);
-    if (!hintSeen) await sleep(300);
-  }
-  check(hintSeen, "orientation hint shown on first hub visit");
+  check(await hubHintSeen, "orientation hint shown on first hub visit");
 
   // --- 2. hub -> utility ---------------------------------------------
   check(await walkTo(14, 3.0, "utility door approach"), "walked east across the hub");
