@@ -1,0 +1,8 @@
+{
+  "name": "orpheus-testkit",
+  "private": true,
+  "version": "1.0.0",
+  "dependencies": {
+    "playwright": "^1.49.1"
+  }
+}
